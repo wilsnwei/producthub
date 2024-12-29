@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import Product from "../models/Product.js";
 import ProductsServices from "../services/products-services.js";
 
 export default class ProductsControllers {
@@ -52,11 +51,19 @@ export default class ProductsControllers {
 
   static async deleteProduct(req, res) {
     const id = req.params.id;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res
+        .status(404)
+        .json({ success: "false", message: "Product not found" });
+    }
     try {
       await ProductsServices.deleteProduct(id);
     } catch (error) {
-      return res.json({ success: "false", message: "Product not found" });
+      return res
+        .status(500)
+        .json({ success: "false", message: "Server error" });
     }
-    return res.json({ message: "Product deleted" });
+    return res.json({ success: "true", message: "Product deleted" });
   }
 }
