@@ -1,37 +1,30 @@
-import { VStack, Button, GridItem, SimpleGrid } from "@chakra-ui/react";
+import { Box, VStack, SimpleGrid } from "@chakra-ui/react";
+import { ProductCard } from "../components/ProductCard";
 import { useProductStore } from "../store/product";
 import { useEffect } from "react";
 const HomePage = () => {
-  const { products, fetchProducts, deleteProduct } = useProductStore();
+  const { products, fetchProducts } = useProductStore();
 
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
 
   return (
-    <VStack>
+    <VStack mx={10}>
+      <Box padding={10} fontSize={30} fontWeight={500}>
+        Current Products
+      </Box>
       <SimpleGrid
         columns={{
           base: 1,
           md: 2,
           lg: 3,
         }}
-        gap={60}
+        rowGap={10}
+        columnGap={60}
       >
         {products.map((product) => {
-          return (
-            <GridItem key={product._id}>
-              {product.name} <br />
-              Price: {product.price}
-              <img className="product-image" width={200} src={product.image} />
-              <Button marginTop={9} marginRight={3}>
-                Update
-              </Button>
-              <Button marginTop={9} onClick={() => deleteProduct(product._id)}>
-                Delete
-              </Button>
-            </GridItem>
-          );
+          return <ProductCard key={product._id} product={product} />;
         })}
       </SimpleGrid>
     </VStack>
